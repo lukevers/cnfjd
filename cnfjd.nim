@@ -36,6 +36,17 @@ proc installCjdns(): bool {.discardable.} =
   return true
 
 ##
+## updateCjdns
+##
+## TODO
+##
+## This proc updates cjdns.
+##
+proc updateCjdns(): bool {.discardable.} =
+  # For now let's just return true until we do it.
+  return true
+
+##
 ## checkIfUpTodate
 ##
 ## TODO
@@ -76,3 +87,7 @@ if not installed: checkDependencies()
 # gotten this far then that means we have the necessary
 # dependencies to install cjdns. Let's install cjdns!
 if not installed: installCjdns()
+
+# If we have gotten this far then cjdns is already installed.
+# Now it's time to check if cjdns is up to date!
+if not checkIfUpTodate(): updateCjdns()
