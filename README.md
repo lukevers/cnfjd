@@ -12,6 +12,11 @@ Currently you can only install from source.
 
 If you don't already have [Nim](http://nim-lang.org/) installed, be sure to [install Nim](http://nim-lang.org/download.html) on your system. 
 
+```bash
+git clone https://github.com/lukevers/cnfjd.git
+cd cnfjd
+```
+
 #### Compiling
 
 You can't compile and run cnfjd without Nim installed. It has to be installed with OpenSSL in order to check for updates, so `-d:ssl` must be included when compiling cnfjd.
