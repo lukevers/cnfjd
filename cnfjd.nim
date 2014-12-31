@@ -1,7 +1,4 @@
-from httpclient import getContent
-from os         import existsFile, existsDir, removeDir, getHomeDir, getCurrentDir, setCurrentDir, execShellCmd, copyFileWithPermissions
-from osproc     import execCmdEx
-from strutils   import split, parseInt
+import httpclient, os, osproc, strutils
 
 ##
 ## isInstalled
@@ -104,7 +101,7 @@ proc isUpToDate(): bool =
 # already installed then we don't have to do some other
 # stuff, and we can make it quicker for people to use
 # this for other things besides installation.
-let installed = isInstalled()
+var installed = isInstalled()
 
 # Now if we don't have cjdns installed already, that means
 # we have to install cjdns. Let's install cjdns!
@@ -112,13 +109,16 @@ if not installed:
   # First let's ask to make sure we want to install cjdns.
   if yes("It doesn't seem like cjdns is installed. Would you like to install cjdns?"):
     installCjdns()
+    # Now let's check to see if cjdns installed properly.
+    installed = isInstalled()
 
 # Now we check to see if we have a configuration file yet.
 # If we don't, then lets ask if we want to generate one.
 if installed and not hasConfig():
   # First let's ask to make sure they want to generate one.
   if yes("It looks like you don't have a configuration file. Would you like to generate one?"):
-    generateConfig()
+    if generateConfig(): echo "A configuration file has been generated!"
+    else: echo "There was an error generating a configuration file!"
   else: echo "If you already have one, you can place it at " & os.getHomeDir() & ".cjdroute.conf"
 
 # If we have gotten this far then cjdns is already installed.
