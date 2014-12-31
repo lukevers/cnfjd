@@ -3,3 +3,6 @@ cnfjd
 
 # Auto-generated C files
 nimcache/
+
+# Stupid OS X files that get in the way
+.DS_Store
