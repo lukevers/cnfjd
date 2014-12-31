@@ -32,6 +32,14 @@ proc generateConfig(): bool {.discardable.} =
   ## This proc generates a new configuration file.
   return os.execShellCmd("cjdroute --genconf > " & os.getHomeDir() & ".cjdroute.conf") == 0
 
+proc generateVanityConfig(): bool {.discardable.} =
+  ## generateVanityConfig
+  ##
+  ## TODO
+  ##
+  ## This proc helps the user generate vanity configuration files
+  return false
+
 proc installCjdns(): bool {.discardable.} =
   ## installCjdns
   ##
@@ -94,6 +102,22 @@ proc isUpToDate(): bool =
   # Now we return if we're up to date or not
   return current >= version
 
+proc addPeer(): bool {.discardable.} =
+  ## addPeer
+  ##
+  ## TODO
+  ##
+  ## This proc helps the user to add a peer
+  return false
+
+proc removePeer(): bool {.discardable.} =
+  ## removePeer
+  ##
+  ## TODO
+  ##
+  ## This proc helps the user delete a peer
+  return false
+
 proc next(): bool {.discardable.} =
   ## next
   ##
@@ -102,8 +126,11 @@ proc next(): bool {.discardable.} =
     echo "What would you like to do?"
     echo "[1] Reinstall cjdns"
     echo "[2] Uninstall cjdns"
-    echo "[3] Generate a new configuration file"
-    echo "[4] Exit"
+    echo "[3] Generate a new random configuration file"
+    echo "[4] Generate a new vanity configuration file"
+    echo "[5] Add a peer"
+    echo "[6] Remove a peer"
+    echo "[7] Exit"
     case readLine(stdin)
     of "1": installCjdns()
     of "2":
@@ -113,6 +140,11 @@ proc next(): bool {.discardable.} =
       if yes("Are you sure? This will overwrite your old configuration file."):
         if generateConfig(): echo "A configuration file has been generated!"
         else: echo "There was an error generating a configuration file!"
+    of "4":
+      if yes("Are you sure? This will overwrite your old configuration file."):
+        generateVanityConfig()
+    of "5": addPeer()
+    of "6": removePeer()
     else: return false
 
 proc main() =
