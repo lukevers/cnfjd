@@ -59,17 +59,6 @@ proc installCjdns(): bool {.discardable.} =
   return true
 
 ##
-## updateCjdns
-##
-## TODO
-##
-## This proc updates cjdns.
-##
-proc updateCjdns(): bool {.discardable.} =
-  # For now let's just return true until we do it.
-  return true
-
-##
 ## checkIfUpTodate
 ##
 ## TODO
@@ -98,4 +87,4 @@ if not installed:
 if installed and not checkIfUpTodate():
   # First let's ask to make sure we want to update cjdns.
   if yes("It looks like there's a newer version of cjdns available! Would you like to update cjdns?"):
-    updateCjdns()
+    installCjdns()
