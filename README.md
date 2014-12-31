@@ -19,7 +19,7 @@ cd cnfjd
 
 #### Compiling
 
-You can't compile and run cnfjd without Nim installed. It has to be installed with OpenSSL in order to check for updates, so `-d:ssl` must be included when compiling cnfjd.
+You can't compile and run cnfjd without Nim installed. Cnfjd has to be installed with OpenSSL in order to check for updates, so `-d:ssl` must be included when compiling cnfjd.
 
 ```bash
 nim c -d:ssl cnfjd.nim
@@ -35,7 +35,7 @@ cp cnfjd /usr/local/bin/cnfjd
 
 ## Usage
 
-Just running the `cnfjd` command.
+Just run the `cnfjd` command. The program is interactive, and will ask the user to enter values like `y, n, 1, 2, 3, ...`.
 
 ## License
 
