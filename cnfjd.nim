@@ -1,5 +1,5 @@
 from httpclient import getContent
-from os         import existsFile, existsDir, removeDir, getCurrentDir, setCurrentDir, execShellCmd, copyFileWithPermissions
+from os         import existsFile, existsDir, removeDir, getHomeDir, getCurrentDir, setCurrentDir, execShellCmd, copyFileWithPermissions
 from strutils   import split, parseInt
 
 ##
@@ -17,7 +17,7 @@ proc isInstalled(): bool =
 ## This proc checks to see if we have a configuration file already
 ## on our system or not.
 proc hasConfig(): bool =
-  return os.existsFile("~/.cjdroute.conf")
+  return os.existsFile(os.getHomeDir() & ".cjdroute.conf")
 
 ##
 ## yes
@@ -39,7 +39,7 @@ proc yes(question: string): bool =
 ## This proc generates a new configuration file.
 ##
 proc generateConfig(): bool {.discardable.} =
-  return os.execShellCmd("cjdroute --genconf > ~/.cjdroute.conf") == 0
+  return os.execShellCmd("cjdroute --genconf > " & os.getHomeDir() & ".cjdroute.conf") == 0
 
 ##
 ## installCjdns
@@ -115,7 +115,7 @@ if installed and not hasConfig():
   # First let's ask to make sure they want to generate one.
   if yes("It looks like you don't have a configuration file. Would you like to generate one?"):
     generateConfig()
-  else: echo "If you already have one, place it at ~/.cjdroute.conf"
+  else: echo "If you already have one, place it at " & os.getHomeDir() & ".cjdroute.conf"
 
 # If we have gotten this far then cjdns is already installed.
 # Now it's time to check if cjdns is up to date!
