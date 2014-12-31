@@ -1,5 +1,6 @@
 from httpclient import getContent
 from os         import existsFile, existsDir, removeDir, getHomeDir, getCurrentDir, setCurrentDir, execShellCmd, copyFileWithPermissions
+from osproc     import execCmdEx
 from strutils   import split, parseInt
 
 ##
@@ -91,10 +92,13 @@ proc isUpToDate(): bool =
 
   # Now that we know the current protocol version, we have to check
   # to see what protocol version we are currently running.
-  # TODO
+  var cv = osproc.execCmdEx("cjdroute --version")
+  cv.output = strutils.split(cv.output, ": ")[1]
+  cv.output = strutils.split(cv.output, "\n")[0]
+  let current = strutils.parseInt(cv.output)
 
-  # For now let's just return false until we do it.
-  return false
+  # Now we return if we're up to date or not
+  return current >= version
 
 # First let's check to see if it's installed or not. If it's
 # already installed then we don't have to do some other
@@ -115,7 +119,7 @@ if installed and not hasConfig():
   # First let's ask to make sure they want to generate one.
   if yes("It looks like you don't have a configuration file. Would you like to generate one?"):
     generateConfig()
-  else: echo "If you already have one, place it at " & os.getHomeDir() & ".cjdroute.conf"
+  else: echo "If you already have one, you can place it at " & os.getHomeDir() & ".cjdroute.conf"
 
 # If we have gotten this far then cjdns is already installed.
 # Now it's time to check if cjdns is up to date!
