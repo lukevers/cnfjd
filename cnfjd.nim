@@ -26,11 +26,11 @@ proc yes(question: string): bool =
     of "y", "Y", "yes", "Yes": return true
     else: return false
 
-proc generateConfig(): bool {.discardable.} =
+proc generateConfig(path: string = os.getHomeDir()): bool {.discardable.} =
   ## generateConfig
   ##
   ## This proc generates a new configuration file.
-  return os.execShellCmd("cjdroute --genconf > " & os.getHomeDir() & ".cjdroute.conf") == 0
+  return os.execShellCmd("cjdroute --genconf > " & path & ".cjdroute.conf") == 0
 
 proc generateVanityConfig(): bool {.discardable.} =
   ## generateVanityConfig
@@ -76,6 +76,8 @@ proc installCjdns(): bool {.discardable.} =
 
 proc uninstallCjdns(): bool {.discardable.} =
   ## uninstallCjdns
+  ##
+  ## TODO
   ##
   ## This proc completely uninstalls cjdns.
   return false
