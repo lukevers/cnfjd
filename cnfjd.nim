@@ -1,50 +1,42 @@
 import httpclient, os, osproc, strutils
 
-##
-## isInstalled
-##
-## This proc checks to see if we already have cjdns installed on
-## our system.
-##
 proc isInstalled(): bool =
+  ## isInstalled
+  ##
+  ## This proc checks to see if we already have cjdns installed on
+  ## our system.
   return os.existsFile("/usr/local/bin/cjdroute")
 
-##
-## hasConfig
-##
-## This proc checks to see if we have a configuration file already
-## on our system or not.
 proc hasConfig(): bool =
+  ## hasConfig
+  ##
+  ## This proc checks to see if we have a configuration file already
+  ## on our system or not.
   return os.existsFile(os.getHomeDir() & ".cjdroute.conf")
 
-##
-## yes
-##
-## This proc asks whatever question we would like to ask the
-## user currently. This is useful when finding out if they
-## would like to update or not. No is default.
-##
 proc yes(question: string): bool =
+  ## yes
+  ##
+  ## This proc asks whatever question we would like to ask the
+  ## user currently. This is useful when finding out if they
+  ## would like to update or not. No is default.
   echo(question, " (y/N)")
   while true:
     case readLine(stdin)
     of "y", "Y", "yes", "Yes": return true
     else: return false
 
-##
-## generateConfig
-##
-## This proc generates a new configuration file.
-##
 proc generateConfig(): bool {.discardable.} =
+  ## generateConfig
+  ##
+  ## This proc generates a new configuration file.
   return os.execShellCmd("cjdroute --genconf > " & os.getHomeDir() & ".cjdroute.conf") == 0
 
-##
-## installCjdns
-##
-## This proc installs cjdns.
-##
 proc installCjdns(): bool {.discardable.} =
+  ## installCjdns
+  ##
+  ## This proc installs cjdns.
+
   # Set the current directory to come back to later
   let pwd = os.getCurrentDir()
 
@@ -74,13 +66,18 @@ proc installCjdns(): bool {.discardable.} =
   os.setCurrentDir(pwd)
   return true
 
-##
-## isUpToDate
-##
-## This proc checks to see if cjdns is up to date or not with
-## the most recent protocol version.
-##
+proc uninstallCjdns(): bool {.discardable.} =
+  ## uninstallCjdns
+  ##
+  ## This proc completely uninstalls cjdns.
+  return false
+
 proc isUpToDate(): bool =
+  ## isUpToDate
+  ##
+  ## This proc checks to see if cjdns is up to date or not with
+  ## the most recent protocol version.
+
   # First we have to figure out what the current protocol version is
   var v = httpclient.getContent("https://raw.githubusercontent.com/cjdelisle/cjdns/master/util/version/Version.h")
   v = strutils.split(v, "#define Version_CURRENT_PROTOCOL ")[1]
@@ -97,33 +94,63 @@ proc isUpToDate(): bool =
   # Now we return if we're up to date or not
   return current >= version
 
-# First let's check to see if it's installed or not. If it's
-# already installed then we don't have to do some other
-# stuff, and we can make it quicker for people to use
-# this for other things besides installation.
-var installed = isInstalled()
+proc next(): bool {.discardable.} =
+  ## next
+  ##
+  ## This proc loops endlessly until the program is completed.
+  while true:
+    echo "What would you like to do?"
+    echo "[1] Reinstall cjdns"
+    echo "[2] Uninstall cjdns"
+    echo "[3] Generate a new configuration file"
+    echo "[4] Exit"
+    case readLine(stdin)
+    of "1": installCjdns()
+    of "2":
+      if yes("Are you sure? This will delete all files related to cjdns."):
+        uninstallCjdns()
+    of "3":
+      if yes("Are you sure? This will overwrite your old configuration file."):
+        if generateConfig(): echo "A configuration file has been generated!"
+        else: echo "There was an error generating a configuration file!"
+    else: return false
 
-# Now if we don't have cjdns installed already, that means
-# we have to install cjdns. Let's install cjdns!
-if not installed:
-  # First let's ask to make sure we want to install cjdns.
-  if yes("It doesn't seem like cjdns is installed. Would you like to install cjdns?"):
-    installCjdns()
-    # Now let's check to see if cjdns installed properly.
-    installed = isInstalled()
+proc main() =
+  # First let's check to see if it's installed or not. If it's
+  # already installed then we don't have to do some other
+  # stuff, and we can make it quicker for people to use
+  # this for other things besides installation.
+  var installed = isInstalled()
 
-# Now we check to see if we have a configuration file yet.
-# If we don't, then lets ask if we want to generate one.
-if installed and not hasConfig():
-  # First let's ask to make sure they want to generate one.
-  if yes("It looks like you don't have a configuration file. Would you like to generate one?"):
-    if generateConfig(): echo "A configuration file has been generated!"
-    else: echo "There was an error generating a configuration file!"
-  else: echo "If you already have one, you can place it at " & os.getHomeDir() & ".cjdroute.conf"
+  # Now if we don't have cjdns installed already, that means
+  # we have to install cjdns. Let's install cjdns!
+  if not installed:
+    # First let's ask to make sure we want to install cjdns.
+    if yes("It doesn't seem like cjdns is installed. Would you like to install cjdns?"):
+      installCjdns()
+      # Now let's check to see if cjdns installed properly.
+      installed = isInstalled()
 
-# If we have gotten this far then cjdns is already installed.
-# Now it's time to check if cjdns is up to date!
-if installed and not isUpToDate():
-  # First let's ask to make sure we want to update cjdns.
-  if yes("It looks like there's a newer version of cjdns available! Would you like to update cjdns?"):
-    installCjdns()
+  # Now we check to see if we have a configuration file yet.
+  # If we don't, then lets ask if we want to generate one.
+  if installed and not hasConfig():
+    # First let's ask to make sure they want to generate one.
+    if yes("It looks like you don't have a configuration file. Would you like to generate one?"):
+      if generateConfig(): echo "A configuration file has been generated!"
+      else: echo "There was an error generating a configuration file!"
+    else: echo "If you already have one, you can place it at " & os.getHomeDir() & ".cjdroute.conf"
+
+  # If we have gotten this far then cjdns is already installed.
+  # Now it's time to check if cjdns is up to date!
+  if installed and not isUpToDate():
+    # First let's ask to make sure we want to update cjdns.
+    if yes("It looks like there's a newer version of cjdns available! Would you like to update cjdns?"):
+      installCjdns()
+
+  # Now that we've gotten all the preliminary stuff out of the
+  # way we can run the question loop to see what the user
+  # would like to do next.
+  next()
+
+# Run the main proc
+main()
