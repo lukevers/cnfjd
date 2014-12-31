@@ -35,7 +35,7 @@ cp cnfjd /usr/local/bin/cnfjd
 
 ## Usage
 
-Just run the `cnfjd` command. The program is interactive, and will ask the user to enter values like `y, n, 1, 2, 3, ...`.
+Just run the `cnfjd` command. The program is interactive, and will ask the user to enter values like `y, n, 1, 2, 3`.
 
 ## License
 
