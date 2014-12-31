@@ -1,4 +1,6 @@
-from os import existsFile, existsDir, removeDir, getCurrentDir, setCurrentDir, execShellCmd, copyFileWithPermissions
+from httpclient import getContent
+from os         import existsFile, existsDir, removeDir, getCurrentDir, setCurrentDir, execShellCmd, copyFileWithPermissions
+from strutils   import split, parseInt
 
 ##
 ## isInstalled
@@ -77,11 +79,20 @@ proc installCjdns(): bool {.discardable.} =
 ##
 ## isUpToDate
 ##
-## TODO
-##
-## This proc checks to see if cjdns is up to date or not.
+## This proc checks to see if cjdns is up to date or not with
+## the most recent protocol version.
 ##
 proc isUpToDate(): bool =
+  # First we have to figure out what the current protocol version is
+  var v = httpclient.getContent("https://raw.githubusercontent.com/cjdelisle/cjdns/master/util/version/Version.h")
+  v = strutils.split(v, "#define Version_CURRENT_PROTOCOL ")[1]
+  v = strutils.split(v, "\n")[0]
+  let version = strutils.parseInt(v)
+
+  # Now that we know the current protocol version, we have to check
+  # to see what protocol version we are currently running.
+  # TODO
+
   # For now let's just return false until we do it.
   return false
 
