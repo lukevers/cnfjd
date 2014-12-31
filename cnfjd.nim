@@ -29,17 +29,24 @@ proc yes(question: string): bool =
 ## This proc installs cjdns.
 ##
 proc installCjdns(): bool {.discardable.} =
-  # If we get this far then that means we are going ahead
-  # with installing cjdns. Yay!
+  # Set the current directory to come back to later
   let pwd = os.getCurrentDir()
+
+  # Set the current directory to a temporary one,
+  # and if there's already a cjdns folder then we
+  # delete it to make room for the new one.
   os.setCurrentDir("/tmp")
   if os.existsDir("cjdns"): os.removeDir("cjdns")
+
+  # Clone cjdns
   var i = os.execShellCmd("git clone https://github.com/cjdelisle/cjdns.git")
   if i != 0: return false
 
   # Now we have cjdns downloaded in `/tmp/cjdns` so let's
-  # go ahead and compile it.
+  # change our current directory again.
   os.setCurrentDir("cjdns")
+
+  # Now let's compile cjdns.
   i = os.execShellCmd("./do")
   if i != 0: return false
 
