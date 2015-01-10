@@ -23,18 +23,14 @@ cd cnfjd
 
 #### Compiling
 
-You can't compile and run cnfjd without Nim installed. Cnfjd has to be installed with OpenSSL in order to check for updates, so `-d:ssl` must be included when compiling cnfjd.
-
 ```bash
-nim c -d:ssl cnfjd.nim
+make
 ```
 
 #### Installing
 
-Place the cnfjd binary anywhere in your `$PATH`. For example:
-
 ```bash
-cp cnfjd /usr/local/bin/cnfjd
+make install
 ```
 
 ## Usage
