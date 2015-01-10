@@ -35,7 +35,23 @@ cp cnfjd /usr/local/bin/cnfjd
 
 ## Usage
 
-Just run the `cnfjd` command. The program is interactive, and will ask the user to enter values like `y, n, 1, 2, 3`.
+Just run the `cnfjd` command. The program is interactive, and currently has the following menu:
+
+```
+What would you like to do?
+[1] Start cjdns
+[2] Stop cjdns
+[3] Restart cjdns
+[4] Reinstall cjdns
+[5] Uninstall cjdns - TODO
+[6] Generate a new random configuration file
+[7] Generate a new vanity configuration file - TODO
+[8] Add a peer - TODO
+[9] Remove a peer - TODO
+[0] Exit
+```
+
+Although it says to exit the program type `0`, any key that's not `1...9` will exit the program.
 
 ## License
 
