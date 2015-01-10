@@ -104,6 +104,22 @@ proc isUpToDate(): bool =
   # Now we return if we're up to date or not
   return current >= version
 
+proc startCjdns(): bool {.discardable.} =
+  ## startCjdns
+  ##
+  ## This proc starts cjdns!
+  var i = os.execShellCmd("sudo cjdroute < " & os.getHomeDir() & ".cjdroute.conf")
+  if i != 0: return false
+  else: return true
+
+proc stopCjdns(): bool {.discardable.} =
+  ## stopCjdns
+  ##
+  ## This proc stops cjdns.
+  var i = os.execShellCmd("sudo killall cjdroute")
+  if i != 0: return false
+  else: return true
+
 proc addPeer(): bool {.discardable.} =
   ## addPeer
   ##
@@ -126,27 +142,38 @@ proc next(): bool {.discardable.} =
   ## This proc loops endlessly until the program is completed.
   while true:
     echo "What would you like to do?"
-    echo "[1] Reinstall cjdns"
-    echo "[2] Uninstall cjdns"
-    echo "[3] Generate a new random configuration file"
-    echo "[4] Generate a new vanity configuration file"
-    echo "[5] Add a peer"
-    echo "[6] Remove a peer"
-    echo "[7] Exit"
+    echo "[1] Start cjdns"
+    echo "[2] Stop cjdns"
+    echo "[3] Restart cjdns"
+    echo "[4] Reinstall cjdns"
+    echo "[5] Uninstall cjdns - TODO"
+    echo "[6] Generate a new random configuration file"
+    echo "[7] Generate a new vanity configuration file - TODO"
+    echo "[8] Add a peer - TODO"
+    echo "[9] Remove a peer - TODO"
+    echo "[0] Exit"
     case readLine(stdin)
-    of "1": installCjdns()
+    of "1":
+      startCjdns()
     of "2":
+      stopCjdns()
+    of "3":
+      stopCjdns()
+      startCjdns()
+    of "4":
+      installCjdns()
+    of "5":
       if yes("Are you sure? This will delete all files related to cjdns."):
         uninstallCjdns()
-    of "3":
+    of "6":
       if yes("Are you sure? This will overwrite your old configuration file."):
         if generateConfig(): echo "A configuration file has been generated!"
         else: echo "There was an error generating a configuration file!"
-    of "4":
+    of "7":
       if yes("Are you sure? This will overwrite your old configuration file."):
         generateVanityConfig()
-    of "5": addPeer()
-    of "6": removePeer()
+    of "8": addPeer()
+    of "9": removePeer()
     else: return false
 
 proc main() =
