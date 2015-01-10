@@ -4,6 +4,10 @@
 
 The program cnfjd is a command line interface to install/update [cjdns](https://github.com/cjdelisle/cjdns) without having to lift a finger. _Disclaimer: you may have to lift a few fingers._
 
+## Why?
+
+Why not? I like to keep programs updated and running, but I don't like manually doing it.
+
 ## Installing
 
 Currently you can only install from source.
