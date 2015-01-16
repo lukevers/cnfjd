@@ -96,10 +96,14 @@ proc uninstallCjdns() =
   ## This proc completely uninstalls cjdns. It removes the binary
   ## placed at `/usr/local/bin/cjdroute`, the configuration file
   ## placed at `~/.cjdroute.conf`, and the temporary dir placed
-  ## at `/tmp/cjdns`.
+  ## at `/tmp/cjdns`. Also, any extra files used to create any
+  ## vanity configuration file will be deleted. The files are
+  ## kept at `/tmp/cjdroute.conf` and `/tmp/cjdroute.ipv6`.
   if isInstalled(): os.removeFile("/usr/local/bin/cjdroute")
   if hasConfig(): os.removeFile(os.getHomeDir() & ".cjdroute.conf")
   if os.existsDir("/tmp/cjdns"): os.removeDir("/tmp/cjdns")
+  if os.existsFile("/tmp/cjdroute.conf"): os.removeFile("/tmp/cjdroute.conf")
+  if os.existsFile("/tmp/cjdroute.ipv6"): os.removeFile("/tmp/cjdroute.ipv6")
 
 proc isUpToDate(): bool =
   ## isUpToDate
