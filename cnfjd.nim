@@ -74,13 +74,16 @@ proc installCjdns(): bool {.discardable.} =
   os.setCurrentDir(pwd)
   return true
 
-proc uninstallCjdns(): bool {.discardable.} =
+proc uninstallCjdns() =
   ## uninstallCjdns
   ##
-  ## TODO
-  ##
-  ## This proc completely uninstalls cjdns.
-  return false
+  ## This proc completely uninstalls cjdns. It removes the binary
+  ## placed at `/usr/local/bin/cjdroute`, the configuration file
+  ## placed at `~/.cjdroute.conf`, and the temporary dir placed
+  ## at `/tmp/cjdns`.
+  if isInstalled(): os.removeFile("/usr/local/bin/cjdroute")
+  if hasConfig(): os.removeFile(os.getHomeDir() & ".cjdroute.conf")
+  if os.existsDir("/tmp/cjdns"): os.removeDir("/tmp/cjdns")
 
 proc isUpToDate(): bool =
   ## isUpToDate
@@ -154,7 +157,7 @@ proc next(): bool {.discardable.} =
     echo "[2] Stop cjdns"
     echo "[3] Restart cjdns"
     echo "[4] Reinstall cjdns"
-    echo "[5] Uninstall cjdns - TODO"
+    echo "[5] Uninstall cjdns"
     echo "[6] Generate a new random configuration file"
     echo "[7] Generate a new vanity configuration file - TODO"
     echo "[8] Add a peer - TODO"
