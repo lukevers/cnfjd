@@ -32,15 +32,31 @@ proc generateConfig(path: string = os.getHomeDir()): bool {.discardable.} =
   ## This proc generates a new configuration file.
   return os.execShellCmd("cjdroute --genconf > " & path & ".cjdroute.conf") == 0
 
-proc generateVanityConfig(): bool {.discardable.} =
+proc generateVanityConfig(): bool =
   ## generateVanityConfig
   ##
   ## TODO
   ##
   ## This proc helps the user generate vanity configuration files
+
+  while true:
+    # Generate a new configuration file
+    var i = os.execShellCmd("cjdroute --genconf > /tmp/cjdroute.conf")
+    # Get only the ipv6 address
+    i = os.execShellCmd("cat /tmp/cjdroute.conf | grep ipv6 | tail -1 | cut -d '\"' -f4 > /tmp/cjdroute.ipv6")
+    var
+      f: File
+    if open(f, "/tmp/cjdroute.ipv6"):
+      try:
+        var ipv6 = readLine(f)
+        var all6 = strutils.split(ipv6, ":")
+        echo all6
+      finally:
+        close(f)
+  # If we ever get here then something happened. Might as well return false!
   return false
 
-proc installCjdns(): bool {.discardable.} =
+proc installCjdns(): bool =
   ## installCjdns
   ##
   ## This proc installs cjdns.
@@ -172,7 +188,8 @@ proc next(): bool {.discardable.} =
       stopCjdns()
       startCjdns()
     of "4":
-      installCjdns()
+      if not installCjdns():
+        echo "There was an error installing cjdns!"
     of "5":
       if yes("Are you sure? This will delete all files related to cjdns."):
         uninstallCjdns()
@@ -193,6 +210,7 @@ proc main() =
   # already installed then we don't have to do some other
   # stuff, and we can make it quicker for people to use
   # this for other things besides installation.
+  echo "Checking to see if cjdns is already installed..."
   var installed = isInstalled()
 
   # Now if we don't have cjdns installed already, that means
@@ -200,7 +218,8 @@ proc main() =
   if not installed:
     # First let's ask to make sure we want to install cjdns.
     if yes("It doesn't seem like cjdns is installed. Would you like to install cjdns?"):
-      installCjdns()
+      if not installCjdns():
+        echo "There was an error installing cjdns!"
       # Now let's check to see if cjdns installed properly.
       installed = isInstalled()
 
@@ -218,7 +237,8 @@ proc main() =
   if installed and not isUpToDate():
     # First let's ask to make sure we want to update cjdns.
     if yes("It looks like there's a newer version of cjdns available! Would you like to update cjdns?"):
-      installCjdns()
+      if not installCjdns():
+        echo "There was an error installing cjdns!"
 
   # Now that we've gotten all the preliminary stuff out of the
   # way we can run the question loop to see what the user
