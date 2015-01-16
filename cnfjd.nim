@@ -182,7 +182,8 @@ proc next(): bool {.discardable.} =
         else: echo "There was an error generating a configuration file!"
     of "7":
       if yes("Are you sure? This will overwrite your old configuration file."):
-        generateVanityConfig()
+        if generateVanityConfig(): echo "A configuration file has been generated!"
+        else: echo "There was an error generating a configuration file!"
     of "8": addPeer()
     of "9": removePeer()
     else: return false
