@@ -43,7 +43,7 @@ What would you like to do?
 [2] Stop cjdns
 [3] Restart cjdns
 [4] Reinstall cjdns
-[5] Uninstall cjdns - TODO
+[5] Uninstall cjdns
 [6] Generate a new random configuration file
 [7] Generate a new vanity configuration file - TODO
 [8] Add a peer - TODO
