@@ -88,21 +88,29 @@ proc isUpToDate(): bool =
   ## This proc checks to see if cjdns is up to date or not with
   ## the most recent protocol version.
 
-  # First we have to figure out what the current protocol version is
-  var v = httpclient.getContent("https://raw.githubusercontent.com/cjdelisle/cjdns/master/util/version/Version.h")
-  v = strutils.split(v, "#define Version_CURRENT_PROTOCOL ")[1]
-  v = strutils.split(v, "\n")[0]
-  let version = strutils.parseInt(v)
+  # First we have to figure out what the current protocol version is.
+  # We're encasing this in a try statement because if the user does
+  # not have an internet connection then it will not work.
+  try:
+    var v = httpclient.getContent("https://raw.githubusercontent.com/cjdelisle/cjdns/master/util/version/Version.h")
+    v = strutils.split(v, "#define Version_CURRENT_PROTOCOL ")[1]
+    v = strutils.split(v, "\n")[0]
+    let version = strutils.parseInt(v)
 
-  # Now that we know the current protocol version, we have to check
-  # to see what protocol version we are currently running.
-  var cv = osproc.execCmdEx("cjdroute --version")
-  cv.output = strutils.split(cv.output, ": ")[1]
-  cv.output = strutils.split(cv.output, "\n")[0]
-  let current = strutils.parseInt(cv.output)
+    # Now that we know the current protocol version, we have to check
+    # to see what protocol version we are currently running.
+    var cv = osproc.execCmdEx("cjdroute --version")
+    cv.output = strutils.split(cv.output, ": ")[1]
+    cv.output = strutils.split(cv.output, "\n")[0]
+    let current = strutils.parseInt(cv.output)
 
-  # Now we return if we're up to date or not
-  return current >= version
+    # Now we return if we're up to date or not
+    return current >= version
+  except OSError:
+    # If we get here then they probably don't have an internet
+    # connection, and we should return true since they can't
+    # download anything.
+    return false
 
 proc startCjdns(): bool {.discardable.} =
   ## startCjdns
