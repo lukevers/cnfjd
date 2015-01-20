@@ -35,10 +35,36 @@ proc generateConfig(path: string = os.getHomeDir()): bool {.discardable.} =
 proc generateVanityConfig(): bool =
   ## generateVanityConfig
   ##
-  ## TODO
-  ##
   ## This proc helps the user generate vanity configuration files
 
+  # First we let the user pick if they want to match at the beginning,
+  # the end, or anywhere in the address.
+  var location = 0
+  while true:
+    echo "What part of the IPv6 address do you want to match?"
+    echo "[1] Any (TODO)"
+    echo "[2] Beginning"
+    echo "[3] Ending (most common)"
+    case readLine(stdin)
+    of "1":
+      location = 1
+      break
+    of "2":
+      location = 2
+      break
+    of "3":
+      location = 3
+      break
+    else:
+      echo "Please pick a valid option."
+
+  # Now we want to figure out what we are matching.
+  echo "What would you like to match? (Hexadecimal symbols only)"
+  let match = readLine(stdin)
+
+  # Generate configuration files
+  var count = 0
+  var ipv6 = ""
   while true:
     # Generate a new configuration file
     var i = os.execShellCmd("cjdroute --genconf > /tmp/cjdroute.conf")
@@ -48,11 +74,49 @@ proc generateVanityConfig(): bool =
       f: File
     if open(f, "/tmp/cjdroute.ipv6"):
       try:
-        var ipv6 = readLine(f)
+        # Figure out what the IPv6 address is we just generated
+        ipv6 = readLine(f)
         var all6 = strutils.split(ipv6, ":")
-        echo all6
+
+        # Padd the front with 0s if it's missing any
+        for i, v in @all6:
+          var u = v
+          while len(u) != 4:
+            u = "0" & u
+            all6[i] = u
+
+        # Up our count so we can see how many times it took to find a match
+        count = count + 1
+
+        # Match
+        case location:
+        of 1: # Any
+          # TODO
+          echo "Not ready yet."
+          return false
+        of 2: # Beginning
+          if strutils.startsWith(strutils.join(all6, ""), match):
+            echo(strutils.join(all6, ":"), " [match found] [", count, "]")
+            break
+          else:
+            echo(strutils.join(all6, ":"), " [no match] [", count, "]")
+            continue
+        of 3: # Ending
+          if strutils.endsWith(strutils.join(all6, ""), match):
+            echo(strutils.join(all6, ":"), " [match found] [", count, "]")
+            break
+          else:
+            echo(strutils.join(all6, ":"), " [no match] [", count, "]")
+            continue
+        else: continue
       finally:
         close(f)
+
+  # Check to see if we really want to overwrite/write a configuration file
+  if yes("Are you sure you would like to make this your new configuration file?"):
+    os.copyFileWithPermissions("/tmp/cjdroute.conf", os.getHomeDir() & ".cjdroute.conf")
+    return true
+
   # If we ever get here then something happened. Might as well return false!
   return false
 
@@ -179,7 +243,7 @@ proc next(): bool {.discardable.} =
     echo "[4] Reinstall cjdns"
     echo "[5] Uninstall cjdns"
     echo "[6] Generate a new random configuration file"
-    echo "[7] Generate a new vanity configuration file - TODO"
+    echo "[7] Generate a new vanity configuration file"
     echo "[8] Add a peer - TODO"
     echo "[9] Remove a peer - TODO"
     echo "[0] Exit"
