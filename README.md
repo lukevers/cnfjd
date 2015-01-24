@@ -10,7 +10,13 @@ Why not? I like to keep programs updated and running, but I don't like manually 
 
 ## Installing
 
-Currently you can only install from source.
+You can either install from source, or download the latest binary from GitHub.
+
+### Download Binary
+
+| OS X |
+|------|
+| [Latest](https://github.com/lukevers/cnfjd/releases/download/v0.3.1/cnfjd-Mac-OS-X-10.10.zip) |
 
 ### Install From Source
 
