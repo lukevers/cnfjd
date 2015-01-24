@@ -5,7 +5,7 @@ PROGRAM := cnfjd
 all: $(PROGRAM)
 
 $(PROGRAM):
-	nim c -d:ssl cnfjd.nim
+	nim c -d:ssl -d:release cnfjd.nim
 
 install: $(PROGRAM)
 	@- install -m 755 $(PROGRAM) /usr/local/bin
