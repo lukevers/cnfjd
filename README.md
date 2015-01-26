@@ -14,9 +14,9 @@ You can either install from source, or download the latest binary from GitHub.
 
 ### Download Binary
 
-| OS X |
-|------|
-| [Latest](https://github.com/lukevers/cnfjd/releases/download/v0.3.1/cnfjd-Mac-OS-X-10.10.zip) |
+| OS X | Linux x86_64 |
+|------|--------------|
+| [Latest](https://github.com/lukevers/cnfjd/releases/download/v0.3.1/cnfjd-Mac-OS-X-10.10.zip) | [Latest](https://github.com/lukevers/cnfjd/releases/download/v0.3.1/cnfjd-Linux-x86_64.zip) |
 
 ### Install From Source
 
